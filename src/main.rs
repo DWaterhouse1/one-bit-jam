@@ -1,6 +1,10 @@
 use bevy::prelude::*;
 use bevy::window::PresentMode;
 
+use one_bit_jam::camera::{
+    update_camera, 
+    CameraManagerPlugin,
+};
 use one_bit_jam::config::WINDOW_SETTINGS;
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
@@ -10,7 +14,7 @@ fn main() {
     // When building for WASM, print panics to the browser console
     #[cfg(target_arch = "wasm32")]
     console_error_panic_hook::set_once();
-    
+
     App::new()
         .insert_resource(Msaa::Off)
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
@@ -28,11 +32,12 @@ fn main() {
         }))
         .add_plugins(LdtkPlugin)
         .add_systems(Startup, setup)
+        .add_systems(Update, update_camera)
         .insert_resource(LevelSelection::Index(0))
         .register_ldtk_entity::<TestEntityBundle>("Entity")
-        .register_ldtk_entity::<TestPlayerEntityBundle>("TestPlayer")
         .register_ldtk_entity::<PlayerBundle>("Player")
         .add_plugins(PhysicsPluginGroup)
+        .add_plugins(CameraManagerPlugin)
         .run();
 }
 
@@ -48,10 +53,4 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 pub struct TestEntityBundle {
     #[sprite_bundle("atlas/test_ent.png")]
     sprite_bundle: SpriteBundle,
-}
-
-#[derive(Bundle, LdtkEntity)]
-pub struct TestPlayerEntityBundle {
-    #[sprite_sheet_bundle("atlas/test_player_ent.png", 16.0, 16.0, 7, 1, 0.0, 0.0, 0)]
-    sprite_bundle: SpriteSheetBundle,
 }

@@ -12,6 +12,6 @@ pub struct WindowSettings {
 
 pub const WINDOW_SETTINGS: WindowSettings = WindowSettings {
     title: "One Bit Jam",
-    width: 680.0,
-    height: 680.0,
+    width: 800.0,
+    height: 600.0,
 };
