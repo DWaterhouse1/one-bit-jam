@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 use bevy::window::PresentMode;
 
-mod config;
-
-use config::WINDOW_SETTINGS;
+use one_bit_jam::config::WINDOW_SETTINGS;
 use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
