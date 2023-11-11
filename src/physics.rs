@@ -2,8 +2,9 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_rapier2d::dynamics::RigidBody;
 use bevy_ecs_ldtk::prelude::*;
-
 use bevy::app::PluginGroupBuilder;
+
+use crate::config::INT_GRID_SETTINGS;
 
 pub struct PhysicsPluginGroup;
 
@@ -37,6 +38,12 @@ pub struct ColliderBundle {
     pub force: ExternalForce,
 }
 
+#[derive(Clone, Default, Bundle, LdtkIntCell)]
+pub struct GroundBundle {
+    pub collider: Collider,
+    pub translation_constraints: LockedAxes,
+}
+
 impl From<EntityInstance> for ColliderBundle {
     fn from(
         entity_instance: EntityInstance,
@@ -49,6 +56,21 @@ impl From<EntityInstance> for ColliderBundle {
                 ..Default::default()
             },
             _ => ColliderBundle::default(),
+        }
+    }
+}
+
+impl From<IntGridCell> for GroundBundle {
+    fn from(int_grid_cell: IntGridCell) -> GroundBundle {
+        if int_grid_cell.value == INT_GRID_SETTINGS.ground {
+            GroundBundle {
+                collider: Collider::cuboid(8.0, 8.0),
+                translation_constraints:
+                    LockedAxes::all(),
+                ..Default::default()
+            }
+        } else {
+            GroundBundle::default()
         }
     }
 }
