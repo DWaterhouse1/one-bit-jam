@@ -26,6 +26,7 @@ fn main() {
         .add_systems(Startup, setup)
         .insert_resource(LevelSelection::Index(0))
         .register_ldtk_entity::<TestEntityBundle>("Entity")
+        .register_ldtk_entity::<TestPlayerEntityBundle>("TestPlayer")
         .run();
 }
 
@@ -39,6 +40,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 #[derive(Bundle, LdtkEntity)]
 pub struct TestEntityBundle {
-    #[sprite_sheet_bundle("atlas/test_ent.png", 16.0, 16.0, 2, 2, 0.0, 0.0, 3)]
+    #[sprite_bundle("atlas/test_ent.png")]
+    sprite_bundle: SpriteBundle,
+}
+
+#[derive(Bundle, LdtkEntity)]
+pub struct TestPlayerEntityBundle {
+    #[sprite_sheet_bundle("atlas/test_player_ent.png", 16.0, 16.0, 7, 1, 0.0, 0.0, 0)]
     sprite_bundle: SpriteSheetBundle,
 }

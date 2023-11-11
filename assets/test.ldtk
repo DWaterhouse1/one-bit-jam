@@ -11,7 +11,7 @@
 	"iid": "e0e4eaa0-6280-11ee-80b5-b10598515b14",
 	"jsonVersion": "1.4.1",
 	"appBuildId": 471015,
-	"nextUid": 20,
+	"nextUid": 21,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -363,6 +363,40 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "TestPlayer",
+			"uid": 20,
+			"tags": [],
+			"exportToToc": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#D77643",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 15,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 15, "x": 224, "y": 16, "w": 16, "h": 16 },
+			"uiTileRect": { "tilesetUid": 15, "x": 224, "y": 16, "w": 16, "h": 16 },
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -506,6 +540,22 @@
 								"id": "V_String",
 								"params": ["hello unlevel"]
 							}] }]
+						},
+						{
+							"__identifier": "TestPlayer",
+							"__grid": [5,7],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 15, "x": 224, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"__worldX": 80,
+							"__worldY": 112,
+							"iid": "6a76bbf0-6280-11ee-80b5-a3696957120e",
+							"width": 16,
+							"height": 16,
+							"defUid": 20,
+							"px": [80,112],
+							"fieldInstances": []
 						}
 					]
 				},
