@@ -7,6 +7,10 @@ use config::WINDOW_SETTINGS;
 use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
+    // When building for WASM, print panics to the browser console
+    #[cfg(target_arch = "wasm32")]
+    console_error_panic_hook::set_once();
+    
     App::new()
         .insert_resource(Msaa::Off)
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
