@@ -4,12 +4,9 @@ use bevy::window::PresentMode;
 mod config;
 
 use config::WINDOW_SETTINGS;
+use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
-    // When building for WASM, print panics to the browser console
-    #[cfg(target_arch = "wasm32")]
-    
-    console_error_panic_hook::set_once();
     App::new()
         .insert_resource(Msaa::Off)
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
@@ -25,5 +22,25 @@ fn main() {
             }),
             ..default()
         }))
+        .add_plugins(LdtkPlugin)
+        .add_systems(Startup, setup)
+        .insert_resource(LevelSelection::Index(1))
+        // .register_ldtk_entity::<MyBundle>("MyEntityIdentifier")
         .run();
 }
+
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(Camera2dBundle::default());
+    commands.spawn(LdtkWorldBundle {
+        ldtk_handle: asset_server.load("test.ldtk"),
+        ..Default::default()
+    });
+}
+
+// #[derive(Bundle, LdtkEntity)]
+// pub struct MyBundle {
+//     a: ComponentA,
+//     b: ComponentB,
+//     #[sprite_sheet_bundle]
+//     sprite_bundle: SpriteSheetBundle,
+// }
