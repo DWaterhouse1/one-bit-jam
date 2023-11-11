@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::window::PresentMode;
 
 use one_bit_jam::config::WINDOW_SETTINGS;
+use one_bit_jam::physics::PhysicsPluginGroup;
 use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
@@ -29,6 +30,7 @@ fn main() {
         .insert_resource(LevelSelection::Index(0))
         .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_entity::<TestPlayerEntityBundle>("TestPlayer")
+        .add_plugins(PhysicsPluginGroup)
         .run();
 }
 
