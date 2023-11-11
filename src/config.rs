@@ -5,6 +5,10 @@ pub struct WindowSettings {
     pub width: f32,
     pub height: f32,
 }
+
+pub struct IntGridSettings {
+    pub ground: i32,
+}
 // ------------------ DECLARATION END -----------------
 
 
@@ -14,4 +18,8 @@ pub const WINDOW_SETTINGS: WindowSettings = WindowSettings {
     title: "One Bit Jam",
     width: 680.0,
     height: 680.0,
+};
+
+pub const INT_GRID_SETTINGS: IntGridSettings = IntGridSettings {
+    ground: 1,
 };
