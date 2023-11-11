@@ -24,8 +24,8 @@ fn main() {
         }))
         .add_plugins(LdtkPlugin)
         .add_systems(Startup, setup)
-        .insert_resource(LevelSelection::Index(1))
-        // .register_ldtk_entity::<MyBundle>("MyEntityIdentifier")
+        .insert_resource(LevelSelection::Index(0))
+        .register_ldtk_entity::<TestEntityBundle>("Entity")
         .run();
 }
 
@@ -37,10 +37,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
 }
 
-// #[derive(Bundle, LdtkEntity)]
-// pub struct MyBundle {
-//     a: ComponentA,
-//     b: ComponentB,
-//     #[sprite_sheet_bundle]
-//     sprite_bundle: SpriteSheetBundle,
-// }
+#[derive(Bundle, LdtkEntity)]
+pub struct TestEntityBundle {
+    #[sprite_sheet_bundle("atlas/test_ent.png", 16.0, 16.0, 2, 2, 0.0, 0.0, 3)]
+    sprite_bundle: SpriteSheetBundle,
+}
