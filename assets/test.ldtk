@@ -11,7 +11,7 @@
 	"iid": "e0e4eaa0-6280-11ee-80b5-b10598515b14",
 	"jsonVersion": "1.4.1",
 	"appBuildId": 471015,
-	"nextUid": 21,
+	"nextUid": 22,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -397,6 +397,40 @@
 			"pivotX": 0,
 			"pivotY": 0,
 			"fieldDefs": []
+		},
+		{
+			"identifier": "Player",
+			"uid": 21,
+			"tags": [],
+			"exportToToc": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#EAD4AA",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 15,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 15, "x": 384, "y": 208, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -555,6 +589,22 @@
 							"height": 16,
 							"defUid": 20,
 							"px": [80,112],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Player",
+							"__grid": [0,3],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 15, "x": 384, "y": 208, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"__worldX": 0,
+							"__worldY": 48,
+							"iid": "0f1d7b40-6280-11ee-9dc0-efd3d1890e51",
+							"width": 16,
+							"height": 16,
+							"defUid": 21,
+							"px": [0,48],
 							"fieldInstances": []
 						}
 					]
