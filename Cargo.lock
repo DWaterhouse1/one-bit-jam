@@ -3807,6 +3807,7 @@ version = "0.1.0"
 dependencies = [
  "bevy 0.12.0",
  "bevy_ldtk",
+ "console_error_panic_hook",
  "wasm-server-runner",
 ]
 
