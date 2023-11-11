@@ -4,12 +4,13 @@ use bevy::window::PresentMode;
 mod config;
 
 use config::WINDOW_SETTINGS;
+use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
     // When building for WASM, print panics to the browser console
     #[cfg(target_arch = "wasm32")]
-    
     console_error_panic_hook::set_once();
+    
     App::new()
         .insert_resource(Msaa::Off)
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
@@ -25,5 +26,30 @@ fn main() {
             }),
             ..default()
         }))
+        .add_plugins(LdtkPlugin)
+        .add_systems(Startup, setup)
+        .insert_resource(LevelSelection::Index(0))
+        .register_ldtk_entity::<TestEntityBundle>("Entity")
+        .register_ldtk_entity::<TestPlayerEntityBundle>("TestPlayer")
         .run();
+}
+
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(Camera2dBundle::default());
+    commands.spawn(LdtkWorldBundle {
+        ldtk_handle: asset_server.load("test.ldtk"),
+        ..Default::default()
+    });
+}
+
+#[derive(Bundle, LdtkEntity)]
+pub struct TestEntityBundle {
+    #[sprite_bundle("atlas/test_ent.png")]
+    sprite_bundle: SpriteBundle,
+}
+
+#[derive(Bundle, LdtkEntity)]
+pub struct TestPlayerEntityBundle {
+    #[sprite_sheet_bundle("atlas/test_player_ent.png", 16.0, 16.0, 7, 1, 0.0, 0.0, 0)]
+    sprite_bundle: SpriteSheetBundle,
 }
