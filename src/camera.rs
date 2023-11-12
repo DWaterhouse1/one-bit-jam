@@ -80,6 +80,9 @@ pub fn update_camera(
         delta_transform.y -= 32.0;
     };
 
+    let target_rate = 0.01 * (time.delta().as_nanos() as f32 / 1000000.0);
+    println!("{:?}", target_rate);
+
     // pan camera to target location
     let delta_target = camera_transform.translation - 
                             (player_transform.translation + 
@@ -88,7 +91,7 @@ pub fn update_camera(
                                player_transform.translation;
     if delta_transform != Vec3::new(0.0, 0.0, 0.0)
     {
-        camera_transform.translation -= (delta_target) * 0.025;
+        camera_transform.translation -= (delta_target) * target_rate;
 
         // stop camera tracking for timout period
         camera_manager.time.reset()
@@ -96,7 +99,7 @@ pub fn update_camera(
 
     // start tracking player after elapsed time
     if camera_manager.time.elapsed_secs() > 0.5 {
-        camera_transform.translation -= delta_distance * 0.05;
+        camera_transform.translation -= delta_distance * target_rate;
     };
 }
 
