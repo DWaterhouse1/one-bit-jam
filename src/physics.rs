@@ -4,11 +4,11 @@ use bevy_rapier2d::dynamics::RigidBody;
 use bevy_ecs_ldtk::prelude::*;
 use bevy::app::PluginGroupBuilder;
 
-use crate::config::{
+use crate::{config::{
     PHYSICS_SETTINGS,
     PLAYER_SETTINGS,
-    RAPIER_CONFIG,
-};
+    RAPIER_CONFIG, GAME_RULES,
+}, game_rules::CoinState};
 
 use std::collections::{HashMap, HashSet};
 
@@ -266,16 +266,24 @@ impl From<&EntityInstance> for ColliderBundle {
 
 pub fn movement(
     input: Res<Input<KeyCode>>,
-    mut q_velocity: Query<(&mut Velocity, &GroundDetection), With<Player>>
+    mut q_velocity: Query<(&mut Velocity, &GroundDetection), With<Player>>,
+    q_coins: Query<&CoinState>,
 ) {
+    let coins = match q_coins.get_single() {
+        Ok(coins) => coins,
+        Err(_) => return,
+    };
+
+    let loot_factor = coins.coins_total as f32 / GAME_RULES.starting_coins as f32;
+    let speed_factor = PLAYER_SETTINGS.base_loot_factor + ((1.0 - PLAYER_SETTINGS.base_loot_factor) * loot_factor);
     for (mut velocity, ground_detection) in &mut q_velocity {
         let right = if input.pressed(KeyCode::D) { 1.0 } else { 0.0 };
         let left = if input.pressed(KeyCode::A) { 1.0 } else { 0.0 };
 
-        velocity.linvel.x = (right - left) * PLAYER_SETTINGS.x_velocity;
+        velocity.linvel.x = (right - left) * (PLAYER_SETTINGS.x_velocity * speed_factor);
 
         if input.just_pressed(KeyCode::Space) && ground_detection.on_ground {
-            velocity.linvel.y = PLAYER_SETTINGS.jump_velocity;
+            velocity.linvel.y = PLAYER_SETTINGS.jump_velocity * speed_factor;
         }
     }
 }

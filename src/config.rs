@@ -24,6 +24,7 @@ pub struct PlayerSettings {
     pub friction: f32,
     pub x_velocity: f32,
     pub jump_velocity: f32,
+    pub base_loot_factor: f32,
 }
 
 pub struct CameraSettings {
@@ -38,6 +39,10 @@ pub struct Constants {
 
 pub struct LdtkIntCellValues {
     pub walls: i32,
+}
+
+pub struct GameRules {
+    pub starting_coins: i32,
 }
 
 // ------------------ DECLARATION END -----------------
@@ -69,6 +74,7 @@ pub const PLAYER_SETTINGS: PlayerSettings = PlayerSettings {
     friction: 0.0,
     x_velocity: 150.0,
     jump_velocity: 300.0,
+    base_loot_factor: 0.5,
 };
 
 pub const CAMERA_SETTINGS: CameraSettings = CameraSettings {
@@ -86,3 +92,7 @@ pub const LDTK_INT_CELL_VALUES: LdtkIntCellValues = LdtkIntCellValues {
 };
 
 pub const LDTK_PLAYER_LEVEL: i32 = 0;
+
+pub const GAME_RULES: GameRules = GameRules {
+    starting_coins: 200,
+};
