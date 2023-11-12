@@ -39,7 +39,8 @@ fn main() {
                 ..default()
             }),
             ..default()
-        }))
+        })
+        .set(ImagePlugin::default_nearest()))
         .add_plugins(LdtkPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, update_level_selection)
