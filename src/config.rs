@@ -19,8 +19,8 @@ pub struct PhysicsSettings {
 }
 
 pub struct PlayerSettings {
-    pub half_x_size: f32,
-    pub half_y_size: f32,
+    pub half_height: f32,
+    pub radius: f32,
     pub friction: f32,
     pub x_velocity: f32,
     pub jump_velocity: f32,
@@ -64,8 +64,8 @@ pub const PHYSICS_SETTINGS: PhysicsSettings = PhysicsSettings {
 };
 
 pub const PLAYER_SETTINGS: PlayerSettings = PlayerSettings {
-    half_x_size: 4.0,
-    half_y_size: 16.0,
+    half_height: 6.0,
+    radius: 8.0,
     friction: 0.0,
     x_velocity: 150.0,
     jump_velocity: 300.0,

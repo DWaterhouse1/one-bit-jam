@@ -248,8 +248,8 @@ impl From<&EntityInstance> for ColliderBundle {
         match entity_instance.identifier.as_ref() {
             "Player" => ColliderBundle {
                 collider: Collider::capsule_y(
-                    6.0,
-                    8.0,
+                    PLAYER_SETTINGS.half_height,
+                    PLAYER_SETTINGS.radius,
                 ),
                 rigid_body: RigidBody::Dynamic,
                 friction: Friction {
