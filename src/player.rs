@@ -15,7 +15,7 @@ pub struct PlayerBundle {
     pub collider_bundle: ColliderBundle,
     #[worldly]
     pub worldly: Worldly,
-    #[sprite_sheet_bundle("atlas/test_player_ent.png", 16.0, 16.0, 7, 1, 0.0, 0.0, 0)]
+    #[sprite_sheet_bundle("atlas/Lil_Gobbo.png", 32.0, 32.0, 4, 1, 0.0, 0.0, 3)]
     sprite_bundle: SpriteSheetBundle,
     pub ground_detection: GroundDetection,
 }
