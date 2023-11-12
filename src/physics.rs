@@ -223,38 +223,9 @@ pub struct ColliderBundle {
     pub force: ExternalForce,
 }
 
-#[derive(Clone, Bundle, LdtkIntCell)]
-pub struct GroundBundle {
-    pub collider: Collider,
-}
-
-impl Default for GroundBundle {
-    fn default() -> Self {
-        GroundBundle { collider: Collider::cuboid(200.0, 200.0) }
-    }
-}
-
-
-// impl From<&EntityInstance> for ColliderBundle {
-//     fn from(
-//         entity_instance: &EntityInstance,
-//     ) -> ColliderBundle {
-//         match entity_instance.identifier.as_ref() {
-//             "Player" => ColliderBundle {
-//                 collider: Collider::capsule_y(1200.0, 1200.0),
-//                 rigid_body: RigidBody::KinematicPositionBased,
-//                 rotation_constraints: LockedAxes::ROTATION_LOCKED,
-//                 ..Default::default()
-//             },
-//             _ => ColliderBundle::default(),
-//         }
-//     }
-// }
-
 impl From<&EntityInstance> for ColliderBundle {
     fn from(entity_instance: &EntityInstance) -> ColliderBundle {
         let rotation_constraints = LockedAxes::ROTATION_LOCKED;
-        println!("player EntityInstance->ColliderBundle");
         match entity_instance.identifier.as_ref() {
             "Player" => ColliderBundle {
                 collider: Collider::cuboid(6., 14.),
@@ -270,18 +241,6 @@ impl From<&EntityInstance> for ColliderBundle {
         }
     }
 }
-
-// impl From<&IntGridCell> for GroundBundle {
-//     fn from(int_grid_cell: &IntGridCell) -> GroundBundle {
-//         if int_grid_cell.value == INT_GRID_SETTINGS.ground {
-//             GroundBundle {
-//                 collider: Collider::cuboid(200.0, 200.0),
-//             }
-//         } else {
-//             GroundBundle::default()
-//         }
-//     }
-// }
 
 pub fn movement(
     input: Res<Input<KeyCode>>,
