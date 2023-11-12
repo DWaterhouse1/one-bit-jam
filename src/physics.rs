@@ -235,15 +235,35 @@ impl Default for GroundBundle {
 }
 
 
+// impl From<&EntityInstance> for ColliderBundle {
+//     fn from(
+//         entity_instance: &EntityInstance,
+//     ) -> ColliderBundle {
+//         match entity_instance.identifier.as_ref() {
+//             "Player" => ColliderBundle {
+//                 collider: Collider::capsule_y(1200.0, 1200.0),
+//                 rigid_body: RigidBody::KinematicPositionBased,
+//                 rotation_constraints: LockedAxes::ROTATION_LOCKED,
+//                 ..Default::default()
+//             },
+//             _ => ColliderBundle::default(),
+//         }
+//     }
+// }
+
 impl From<&EntityInstance> for ColliderBundle {
-    fn from(
-        entity_instance: &EntityInstance,
-    ) -> ColliderBundle {
+    fn from(entity_instance: &EntityInstance) -> ColliderBundle {
+        let rotation_constraints = LockedAxes::ROTATION_LOCKED;
+        println!("player EntityInstance->ColliderBundle");
         match entity_instance.identifier.as_ref() {
             "Player" => ColliderBundle {
-                collider: Collider::capsule_y(1200.0, 1200.0),
-                rigid_body: RigidBody::KinematicPositionBased,
-                rotation_constraints: LockedAxes::ROTATION_LOCKED,
+                collider: Collider::cuboid(6., 14.),
+                rigid_body: RigidBody::Dynamic,
+                friction: Friction {
+                    coefficient: 0.0,
+                    combine_rule: CoefficientCombineRule::Min,
+                },
+                rotation_constraints,
                 ..Default::default()
             },
             _ => ColliderBundle::default(),
