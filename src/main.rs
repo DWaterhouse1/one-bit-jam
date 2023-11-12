@@ -1,10 +1,7 @@
 use bevy::prelude::*;
 use bevy::window::PresentMode;
 
-use one_bit_jam::camera::{
-    update_camera, 
-    CameraManagerPlugin,
-};
+use one_bit_jam::camera::CameraManagerPlugin;
 use one_bit_jam::config::WINDOW_SETTINGS;
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
@@ -32,7 +29,6 @@ fn main() {
         }))
         .add_plugins(LdtkPlugin)
         .add_systems(Startup, setup)
-        .add_systems(Update, update_camera)
         .insert_resource(LevelSelection::Index(0))
         .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_entity::<PlayerBundle>("Player")
