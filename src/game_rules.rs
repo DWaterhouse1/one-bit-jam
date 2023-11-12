@@ -42,7 +42,7 @@ fn handle_coin_loss(
 
         let loss = ev.0;
 
-        if (loss > coins.coins_total) {
+        if loss > coins.coins_total {
             // TODO send game over event
             return;
         }
