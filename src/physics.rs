@@ -26,7 +26,6 @@ impl PluginGroup for PhysicsPluginGroup {
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Startup, setup_physics)
             .add_systems(Update, spawn_wall_collision)
             .add_systems(Update, (
                 movement,
@@ -244,7 +243,7 @@ impl From<&EntityInstance> for ColliderBundle {
         let rotation_constraints = LockedAxes::ROTATION_LOCKED;
         match entity_instance.identifier.as_ref() {
             "Player" => ColliderBundle {
-                collider: Collider::cuboid(6., 14.),
+                collider: Collider::capsule_y(8., 4.),
                 rigid_body: RigidBody::Dynamic,
                 friction: Friction {
                     coefficient: 0.0,
