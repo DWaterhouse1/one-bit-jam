@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::window::PresentMode;
 
 use one_bit_jam::camera::CameraManagerPlugin;
+use one_bit_jam::levels::update_level_selection;
 use one_bit_jam::config::WINDOW_SETTINGS;
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
@@ -16,6 +17,13 @@ fn main() {
     App::new()
         .insert_resource(Msaa::Off)
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
+        .insert_resource(LdtkSettings {
+            level_spawn_behavior: LevelSpawnBehavior::UseWorldTranslation {
+                load_level_neighbors: true,
+            },
+            set_clear_color: SetClearColor::FromLevelBackground,
+            ..Default::default()
+        })
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: WINDOW_SETTINGS.title.into(),
@@ -30,7 +38,8 @@ fn main() {
         }))
         .add_plugins(LdtkPlugin)
         .add_systems(Startup, setup)
-        .insert_resource(LevelSelection::Index(0))
+        .add_systems(Update, update_level_selection)
+        .insert_resource(LevelSelection::Uid(0))
         .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_entity::<PlayerBundle>("Player")
         .register_ldtk_int_cell::<WallBundle>(1)
