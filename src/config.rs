@@ -24,6 +24,7 @@ pub struct PlayerSettings {
     pub friction: f32,
     pub x_velocity: f32,
     pub jump_velocity: f32,
+    pub base_loot_factor: f32,
 }
 
 pub struct CameraSettings {
@@ -73,6 +74,7 @@ pub const PLAYER_SETTINGS: PlayerSettings = PlayerSettings {
     friction: 0.0,
     x_velocity: 150.0,
     jump_velocity: 300.0,
+    base_loot_factor: 0.5,
 };
 
 pub const CAMERA_SETTINGS: CameraSettings = CameraSettings {
