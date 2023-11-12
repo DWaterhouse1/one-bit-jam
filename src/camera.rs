@@ -13,14 +13,30 @@ fn setup_camera_manager(mut commands: Commands) {
 impl Plugin for CameraManagerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup,setup_camera_manager);
-        app.add_systems(PostStartup, init_camera);
-        app.add_systems(Update, update_camera);
+        app.add_systems(Update, (
+            update_camera,
+            init_camera,
+            check_new_player,
+        ));
+        app.add_event::<InitCameraEvent>();
     }
 }
 
 #[derive(Component)]
 pub struct CameraManager {
     time: Stopwatch,
+}
+
+pub fn check_new_player(
+    q_player: Query<&Player, Added<Player>>,
+    mut ev_init: EventWriter<InitCameraEvent>,
+)
+{
+    let _ = match q_player.get_single() {
+        Ok(_) => {},
+        Err(_) => return,
+    };
+    ev_init.send(InitCameraEvent)
 }
 
 // TODO add magic numbers to config?
@@ -84,28 +100,37 @@ pub fn update_camera(
     };
 }
 
+#[derive (Event)]
+pub struct InitCameraEvent;
+
 pub fn init_camera(
     mut q_camera_manager: Query<&mut CameraManager>,
     mut q_camera_transform: Query<&mut Transform, (With<Camera>, Without<Player>)>,
     q_player_transform: Query<&Transform, (With<Player>, Without<Camera>)>,
+    mut ev_init: EventReader<InitCameraEvent>,
 )
 {
-    println!("init_camera");
+    for _ in ev_init.iter() {
 
-    let mut camera_manager = match q_camera_manager.get_single_mut() {
-        Ok(camera_manager) => camera_manager,
-        Err(_) => return,
-    };
-    let mut camera_transform = match q_camera_transform.get_single_mut() {
-        Ok(camera_transform) => camera_transform,
-        Err(_) => return,
-    };
-    let player_transform = match q_player_transform.get_single() {
-        Ok(player_transform) => player_transform,
-        Err(_) => return,
-    };
+        let mut camera_manager = match q_camera_manager.get_single_mut() {
+            Ok(camera_manager) => camera_manager,
+            Err(_) => return,
+        };
+    
+        let mut camera_transform = match q_camera_transform.get_single_mut() {
+            Ok(camera_transform) => camera_transform,
+            Err(_) => return,
+        };
+    
+        let player_transform = match q_player_transform.get_single() {
+            Ok(player_transform) => player_transform,
+            Err(_) => return,
+        };
+    
+        // elapse timer to start player tracking
+        camera_manager.time.set_elapsed(Duration::new(100, 0));
+        camera_transform.translation = player_transform.translation;    
+    }
 
-    // elapse timer to start player tracking
-    camera_manager.time.set_elapsed(Duration::new(100, 0));
-    camera_transform.translation = player_transform.translation;
+    ev_init.clear();
 }
