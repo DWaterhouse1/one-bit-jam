@@ -9,6 +9,10 @@ pub struct WindowSettings {
 pub struct IntGridSettings {
     pub ground: i32,
 }
+
+pub struct PhysicsSettings {
+    pub gravity: f32,
+}
 // ------------------ DECLARATION END -----------------
 
 
@@ -22,4 +26,8 @@ pub const WINDOW_SETTINGS: WindowSettings = WindowSettings {
 
 pub const INT_GRID_SETTINGS: IntGridSettings = IntGridSettings {
     ground: 1,
+};
+
+pub const PHYSICS_SETTINGS: PhysicsSettings = PhysicsSettings {
+    gravity: -1000.0
 };
