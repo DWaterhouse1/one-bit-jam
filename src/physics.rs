@@ -22,7 +22,7 @@ impl PluginGroup for PhysicsPluginGroup {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
             .add(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(RAPIER_CONFIG.pixels_per_meter))
-            .add(RapierDebugRenderPlugin::default())
+            // .add(RapierDebugRenderPlugin::default())
             .add(PhysicsPlugin)
     }
 }

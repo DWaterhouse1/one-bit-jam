@@ -25,7 +25,6 @@ pub fn update_level_selection(
                 && player_transform.translation.y > level_bounds.min.y
                 && !level_selection.is_match(&1, &ldtk_level.level)
                 {
-                    println!("player inside me {:?}", ldtk_level.level.iid);
                     *level_selection = LevelSelection::Iid(ldtk_level.level.iid.clone());
                 }
             }

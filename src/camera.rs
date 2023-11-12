@@ -35,8 +35,7 @@ pub struct CameraManager {
 pub fn check_new_player(
     q_player: Query<&Player, Added<Player>>,
     mut ev_init: EventWriter<InitCameraEvent>,
-)
-{
+) {
     let _ = match q_player.get_single() {
         Ok(_) => {},
         Err(_) => return,
@@ -120,8 +119,7 @@ pub fn init_camera(
     mut q_camera_transform: Query<&mut Transform, (With<Camera>, Without<Player>)>,
     q_player_transform: Query<&Transform, (With<Player>, Without<Camera>)>,
     mut ev_init: EventReader<InitCameraEvent>,
-)
-{
+) {
     for _ in ev_init.iter() {
 
         let mut camera_manager = match q_camera_manager.get_single_mut() {
@@ -142,7 +140,9 @@ pub fn init_camera(
         // elapse timer to start player tracking
         // start the timer at any point after the snap time
         camera_manager.time.set_elapsed(Duration::new((CAMERA_SETTINGS.snap_time as u64) + 1, 0));
-        camera_transform.translation = player_transform.translation;    
+        camera_transform.translation = player_transform.translation;
+
+        camera_transform.scale = Vec3::new(0.35, 0.35, 0.35);
     }
 
     ev_init.clear();
