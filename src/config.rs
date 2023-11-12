@@ -10,9 +10,36 @@ pub struct IntGridSettings {
     pub ground: i32,
 }
 
+pub struct RapierConfig {
+    pub pixels_per_meter: f32
+}
+
 pub struct PhysicsSettings {
     pub gravity: f32,
 }
+
+pub struct PlayerSettings {
+    pub half_x_size: f32,
+    pub half_y_size: f32,
+    pub friction: f32,
+    pub x_velocity: f32,
+    pub jump_velocity: f32,
+}
+
+pub struct CameraSettings {
+    pub look_distance: f32,
+    pub target_rate: f32,
+    pub snap_time: f32,
+}
+
+pub struct Constants {
+    pub nano_per_mili: i32,
+}
+
+pub struct LdtkIntCellValues {
+    pub walls: i32,
+}
+
 // ------------------ DECLARATION END -----------------
 
 
@@ -28,6 +55,34 @@ pub const INT_GRID_SETTINGS: IntGridSettings = IntGridSettings {
     ground: 1,
 };
 
+pub const RAPIER_CONFIG: RapierConfig = RapierConfig {
+    pixels_per_meter: 100.0,
+};
+
 pub const PHYSICS_SETTINGS: PhysicsSettings = PhysicsSettings {
     gravity: -1000.0
 };
+
+pub const PLAYER_SETTINGS: PlayerSettings = PlayerSettings {
+    half_x_size: 4.0,
+    half_y_size: 16.0,
+    friction: 0.0,
+    x_velocity: 150.0,
+    jump_velocity: 300.0,
+};
+
+pub const CAMERA_SETTINGS: CameraSettings = CameraSettings {
+    look_distance: 32.0,
+    target_rate: 0.01,
+    snap_time: 0.5,
+};
+
+pub const CONSTANTS: Constants = Constants {
+    nano_per_mili: 1000000,
+};
+
+pub const LDTK_INT_CELL_VALUES: LdtkIntCellValues = LdtkIntCellValues {
+    walls: 1,
+};
+
+pub const LDTK_PLAYER_LEVEL: i32 = 0;

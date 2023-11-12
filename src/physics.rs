@@ -4,7 +4,11 @@ use bevy_rapier2d::dynamics::RigidBody;
 use bevy_ecs_ldtk::prelude::*;
 use bevy::app::PluginGroupBuilder;
 
-use crate::config::PHYSICS_SETTINGS;
+use crate::config::{
+    PHYSICS_SETTINGS,
+    PLAYER_SETTINGS,
+    RAPIER_CONFIG,
+};
 
 use std::collections::{HashMap, HashSet};
 
@@ -17,7 +21,7 @@ struct PhysicsPlugin;
 impl PluginGroup for PhysicsPluginGroup {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
-            .add(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
+            .add(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(RAPIER_CONFIG.pixels_per_meter))
             .add(RapierDebugRenderPlugin::default())
             .add(PhysicsPlugin)
     }
@@ -26,7 +30,6 @@ impl PluginGroup for PhysicsPluginGroup {
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Startup, setup_physics)
             .add_systems(Update, spawn_wall_collision)
             .add_systems(Update, (
                 movement,
@@ -135,7 +138,7 @@ pub fn spawn_wall_collision(
                     let mut plate_start = None;
 
                     // + 1 to the width so the algorithm "terminates" plates that touch the right edge
-                    for x in 0..width + 1 {
+                    for x in 0..=width {
                         match (plate_start, level_walls.contains(&GridCoords { x, y })) {
                             (Some(s), false) => {
                                 row_plates.push(Plate {
@@ -192,21 +195,21 @@ pub fn spawn_wall_collision(
                         level
                             .spawn_empty()
                             .insert(Collider::cuboid(
-                                (wall_rect.right as f32 - wall_rect.left as f32 + 1.)
+                                (wall_rect.right as f32 - wall_rect.left as f32 + 1.0)
                                     * grid_size as f32
-                                    / 2.,
-                                (wall_rect.top as f32 - wall_rect.bottom as f32 + 1.)
+                                    / 2.0,
+                                (wall_rect.top as f32 - wall_rect.bottom as f32 + 1.0)
                                     * grid_size as f32
-                                    / 2.,
+                                    / 2.0,
                             ))
                             .insert(RigidBody::Fixed)
                             .insert(Friction::new(1.0))
                             .insert(Transform::from_xyz(
                                 (wall_rect.left + wall_rect.right + 1) as f32 * grid_size as f32
-                                    / 2.,
+                                    / 2.0,
                                 (wall_rect.bottom + wall_rect.top + 1) as f32 * grid_size as f32
-                                    / 2.,
-                                0.,
+                                    / 2.0,
+                                0.0,
                             ))
                             .insert(GlobalTransform::default());
                     }
@@ -244,10 +247,13 @@ impl From<&EntityInstance> for ColliderBundle {
         let rotation_constraints = LockedAxes::ROTATION_LOCKED;
         match entity_instance.identifier.as_ref() {
             "Player" => ColliderBundle {
-                collider: Collider::cuboid(6., 14.),
+                collider: Collider::cuboid(
+                    PLAYER_SETTINGS.half_x_size,
+                    PLAYER_SETTINGS.half_y_size
+                ),
                 rigid_body: RigidBody::Dynamic,
                 friction: Friction {
-                    coefficient: 0.0,
+                    coefficient: PLAYER_SETTINGS.friction,
                     combine_rule: CoefficientCombineRule::Min,
                 },
                 rotation_constraints,
@@ -263,13 +269,13 @@ pub fn movement(
     mut q_velocity: Query<(&mut Velocity, &GroundDetection), With<Player>>
 ) {
     for (mut velocity, ground_detection) in &mut q_velocity {
-        let right = if input.pressed(KeyCode::D) { 1. } else { 0. };
-        let left = if input.pressed(KeyCode::A) { 1. } else { 0. };
+        let right = if input.pressed(KeyCode::D) { 1.0 } else { 0.0 };
+        let left = if input.pressed(KeyCode::A) { 1.0 } else { 0.0 };
 
-        velocity.linvel.x = (right - left) * 200.0;
+        velocity.linvel.x = (right - left) * PLAYER_SETTINGS.x_velocity;
 
         if input.just_pressed(KeyCode::Space) && ground_detection.on_ground {
-            velocity.linvel.y = 500.0;
+            velocity.linvel.y = PLAYER_SETTINGS.jump_velocity;
         }
     }
 }
@@ -348,11 +354,4 @@ pub fn ground_detection(
             }
         }
     }
-}
-
-fn setup_physics(mut commands: Commands) {
-    /* Create the ground. */
-    commands
-        .spawn(Collider::cuboid(500.0, 50.0))
-        .insert(TransformBundle::from(Transform::from_xyz(0.0, -100.0, 0.0)));
 }

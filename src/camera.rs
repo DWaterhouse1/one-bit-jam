@@ -3,6 +3,11 @@ use crate::player::Player;
 use bevy::prelude::*;
 use bevy::time::Stopwatch;
 
+use crate::config::{
+    CAMERA_SETTINGS,
+    CONSTANTS,
+};
+
 pub struct CameraManagerPlugin;
 fn setup_camera_manager(mut commands: Commands) {
     commands.spawn(CameraManager {
@@ -68,19 +73,24 @@ pub fn update_camera(
     // add camera delta based on user input
     let mut delta_transform = Vec3::new(0.0, 0.0, 0.0);
     if input.pressed(KeyCode::Right) {
-        delta_transform.x += 32.0;
+        delta_transform.x += CAMERA_SETTINGS.look_distance;
     };
     if input.pressed(KeyCode::Left) {
-        delta_transform.x -= 32.0;
+        delta_transform.x -= CAMERA_SETTINGS.look_distance;
     };
     if input.pressed(KeyCode::Up) {
-        delta_transform.y += 32.0;
+        delta_transform.y += CAMERA_SETTINGS.look_distance;
     };
     if input.pressed(KeyCode::Down) {
-        delta_transform.y -= 32.0;
+        delta_transform.y -= CAMERA_SETTINGS.look_distance;
     };
 
-    let target_rate = 0.01 * (time.delta().as_nanos() as f32 / 1000000.0);
+    let target_rate = 
+        CAMERA_SETTINGS.target_rate * (
+            time.delta().as_nanos() as f32 /
+            CONSTANTS.nano_per_mili as f32
+        )
+    ;
 
     // pan camera to target location
     let delta_target = camera_transform.translation - 
@@ -97,7 +107,7 @@ pub fn update_camera(
     }
 
     // start tracking player after elapsed time
-    if camera_manager.time.elapsed_secs() > 0.5 {
+    if camera_manager.time.elapsed_secs() > CAMERA_SETTINGS.snap_time {
         camera_transform.translation -= delta_distance * target_rate;
     };
 }
@@ -130,7 +140,8 @@ pub fn init_camera(
         };
     
         // elapse timer to start player tracking
-        camera_manager.time.set_elapsed(Duration::new(100, 0));
+        // start the timer at any point after the snap time
+        camera_manager.time.set_elapsed(Duration::new((CAMERA_SETTINGS.snap_time as u64) + 1, 0));
         camera_transform.translation = player_transform.translation;    
     }
 
