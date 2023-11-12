@@ -7,10 +7,9 @@ pub struct GameRulesPlugin;
 impl Plugin for GameRulesPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, (
-                init_game,
-                handle_coin_loss,
-            ));
+            .add_systems(Startup, init_game)
+            .add_systems(Update, handle_coin_loss)
+            .add_event::<LoseCoinsEvent>();
     }
 }
 
