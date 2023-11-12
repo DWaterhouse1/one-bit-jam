@@ -5,6 +5,7 @@ use one_bit_jam::camera::CameraManagerPlugin;
 use one_bit_jam::config::WINDOW_SETTINGS;
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
+use one_bit_jam::physics::GroundBundle;
 use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
@@ -32,6 +33,7 @@ fn main() {
         .insert_resource(LevelSelection::Index(0))
         .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_entity::<PlayerBundle>("Player")
+        .register_ldtk_int_cell::<GroundBundle>(1)
         .add_plugins(PhysicsPluginGroup)
         .add_plugins(CameraManagerPlugin)
         .run();
