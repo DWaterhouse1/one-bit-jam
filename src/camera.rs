@@ -81,7 +81,6 @@ pub fn update_camera(
     };
 
     let target_rate = 0.01 * (time.delta().as_nanos() as f32 / 1000000.0);
-    println!("{:?}", target_rate);
 
     // pan camera to target location
     let delta_target = camera_transform.translation - 
