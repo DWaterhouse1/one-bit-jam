@@ -247,9 +247,9 @@ impl From<&EntityInstance> for ColliderBundle {
         let rotation_constraints = LockedAxes::ROTATION_LOCKED;
         match entity_instance.identifier.as_ref() {
             "Player" => ColliderBundle {
-                collider: Collider::cuboid(
-                    PLAYER_SETTINGS.half_x_size,
-                    PLAYER_SETTINGS.half_y_size
+                collider: Collider::capsule_y(
+                    6.0,
+                    8.0,
                 ),
                 rigid_body: RigidBody::Dynamic,
                 friction: Friction {
@@ -285,15 +285,10 @@ pub fn spawn_ground_sensor(
     detect_ground_for: Query<(Entity, &Collider), Added<GroundDetection>>,
 ) {
     for (entity, shape) in &detect_ground_for {
-        if let Some(cuboid) = shape.as_cuboid() {
-            let Vec2 {
-                x: half_extents_x,
-                y: half_extents_y,
-            } = cuboid.half_extents();
+        if let Some(capsule) = shape.as_capsule() {
+            let detector_shape = Collider::cuboid(capsule.radius() / 2.0, 2.);
 
-            let detector_shape = Collider::cuboid(half_extents_x / 2.0, 2.);
-
-            let sensor_translation = Vec3::new(0., -half_extents_y, 0.);
+            let sensor_translation = Vec3::new(0., -capsule.height(), 0.);
 
             commands.entity(entity).with_children(|builder| {
                 builder
