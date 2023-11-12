@@ -11,6 +11,8 @@ use one_bit_jam::config::{
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
 use one_bit_jam::physics::WallBundle;
+use one_bit_jam::game_rules::GameRulesPlugin;
+
 use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
@@ -49,6 +51,7 @@ fn main() {
         .register_ldtk_int_cell::<WallBundle>(LDTK_INT_CELL_VALUES.walls)
         .add_plugins(PhysicsPluginGroup)
         .add_plugins(CameraManagerPlugin)
+        .add_plugins(GameRulesPlugin)
         .run();
 }
 

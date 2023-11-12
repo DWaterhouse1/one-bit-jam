@@ -40,6 +40,10 @@ pub struct LdtkIntCellValues {
     pub walls: i32,
 }
 
+pub struct GameRules {
+    pub starting_coins: i32,
+}
+
 // ------------------ DECLARATION END -----------------
 
 
@@ -86,3 +90,7 @@ pub const LDTK_INT_CELL_VALUES: LdtkIntCellValues = LdtkIntCellValues {
 };
 
 pub const LDTK_PLAYER_LEVEL: i32 = 0;
+
+pub const GAME_RULES: GameRules = GameRules {
+    starting_coins: 200,
+};
