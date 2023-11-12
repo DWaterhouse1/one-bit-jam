@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::physics::ColliderBundle;
+use crate::physics::{ColliderBundle, GroundDetection};
 
 pub struct PlayerPlugin;
 
@@ -17,4 +17,5 @@ pub struct PlayerBundle {
     pub worldly: Worldly,
     #[sprite_sheet_bundle("atlas/test_player_ent.png", 16.0, 16.0, 7, 1, 0.0, 0.0, 0)]
     sprite_bundle: SpriteSheetBundle,
+    pub ground_detection: GroundDetection,
 }
