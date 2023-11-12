@@ -11,6 +11,7 @@ pub struct Player;
 #[derive(Default, Bundle, LdtkEntity)]
 pub struct PlayerBundle {
     pub player: Player,
+    #[from_entity_instance]
     pub collider_bundle: ColliderBundle,
     #[worldly]
     pub worldly: Worldly,
