@@ -4,7 +4,7 @@ use bevy::window::PresentMode;
 use one_bit_jam::config::WINDOW_SETTINGS;
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
-use one_bit_jam::physics::GroundBundle;
+use one_bit_jam::physics::WallBundle;
 use bevy_ecs_ldtk::prelude::*;
 
 fn main() {
@@ -33,7 +33,7 @@ fn main() {
         .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_entity::<TestPlayerEntityBundle>("TestPlayer")
         .register_ldtk_entity::<PlayerBundle>("Player")
-        .register_ldtk_int_cell::<GroundBundle>(1)
+        .register_ldtk_int_cell::<WallBundle>(1)
         .add_plugins(PhysicsPluginGroup)
         .run();
 }
