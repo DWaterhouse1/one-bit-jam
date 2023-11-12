@@ -3,7 +3,11 @@ use bevy::window::PresentMode;
 
 use one_bit_jam::camera::CameraManagerPlugin;
 use one_bit_jam::levels::update_level_selection;
-use one_bit_jam::config::WINDOW_SETTINGS;
+use one_bit_jam::config::{
+    WINDOW_SETTINGS,
+    LDTK_PLAYER_LEVEL,
+    LDTK_INT_CELL_VALUES,
+};
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
 use one_bit_jam::physics::WallBundle;
@@ -39,10 +43,9 @@ fn main() {
         .add_plugins(LdtkPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, update_level_selection)
-        .insert_resource(LevelSelection::Uid(0))
-        .register_ldtk_entity::<TestEntityBundle>("Entity")
+        .insert_resource(LevelSelection::Uid(LDTK_PLAYER_LEVEL))
         .register_ldtk_entity::<PlayerBundle>("Player")
-        .register_ldtk_int_cell::<WallBundle>(1)
+        .register_ldtk_int_cell::<WallBundle>(LDTK_INT_CELL_VALUES.walls)
         .add_plugins(PhysicsPluginGroup)
         .add_plugins(CameraManagerPlugin)
         .run();
@@ -54,10 +57,4 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ldtk_handle: asset_server.load("test.ldtk"),
         ..Default::default()
     });
-}
-
-#[derive(Bundle, LdtkEntity)]
-pub struct TestEntityBundle {
-    #[sprite_bundle("atlas/test_ent.png")]
-    sprite_bundle: SpriteBundle,
 }
