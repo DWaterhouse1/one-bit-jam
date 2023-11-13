@@ -19,4 +19,4 @@ Please see /credits/ for the licensing
 
 # Web Version
 
-No remote hosting yet.
+https://onebitjam.web.app/
