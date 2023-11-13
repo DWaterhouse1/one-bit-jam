@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::window::PresentMode;
 
 use one_bit_jam::camera::CameraManagerPlugin;
+use one_bit_jam::animation::SpriteManagerPlugin;
 use one_bit_jam::levels::update_level_selection;
 use one_bit_jam::config::{
     WINDOW_SETTINGS,
@@ -10,6 +11,7 @@ use one_bit_jam::config::{
 };
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
+use one_bit_jam::test_entity::TestEntityBundle;
 use one_bit_jam::physics::WallBundle;
 use one_bit_jam::game_rules::GameRulesPlugin;
 
@@ -22,7 +24,7 @@ fn main() {
 
     App::new()
         .insert_resource(Msaa::Off)
-        .insert_resource(ClearColor(Color::rgb(52.0, 46.0, 44.0)))
+        .insert_resource(ClearColor(Color::rgb(0.203125, 0.1796875, 0.171875)))
         .insert_resource(LdtkSettings {
             level_spawn_behavior: LevelSpawnBehavior::UseWorldTranslation {
                 load_level_neighbors: true,
@@ -48,6 +50,7 @@ fn main() {
         .add_systems(Update, update_level_selection)
         .insert_resource(LevelSelection::Uid(LDTK_PLAYER_LEVEL))
         .register_ldtk_entity::<PlayerBundle>("Player")
+        .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_int_cell::<WallBundle>(LDTK_INT_CELL_VALUES.walls)
         .add_plugins(PhysicsPluginGroup)
         .add_plugins(CameraManagerPlugin)
