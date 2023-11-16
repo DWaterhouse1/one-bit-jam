@@ -4,3 +4,4 @@ pub mod player;
 pub mod camera;
 pub mod levels;
 pub mod game_rules;
+pub mod entity_state;

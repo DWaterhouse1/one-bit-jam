@@ -43,9 +43,6 @@ pub fn check_new_player(
     ev_init.send(InitCameraEvent)
 }
 
-// TODO add magic numbers to config?
-// might want to be able to change camera speed based
-// add rates as to CameraManager?
 pub fn update_camera(
     time: Res<Time>,
     input: Res<Input<KeyCode>>,

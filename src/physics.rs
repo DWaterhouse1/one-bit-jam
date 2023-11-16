@@ -3,16 +3,12 @@ use bevy_rapier2d::prelude::*;
 use bevy_rapier2d::dynamics::RigidBody;
 use bevy_ecs_ldtk::prelude::*;
 use bevy::app::PluginGroupBuilder;
-
-use crate::{config::{
+use crate::config::{
     PHYSICS_SETTINGS,
     PLAYER_SETTINGS,
-    RAPIER_CONFIG, GAME_RULES,
-}, game_rules::CoinState};
-
+    RAPIER_CONFIG,
+};
 use std::collections::{HashMap, HashSet};
-
-use crate::player::Player;
 
 pub struct PhysicsPluginGroup;
 
@@ -31,12 +27,6 @@ impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, spawn_wall_collision)
-            .add_systems(Update, (
-                movement,
-                spawn_ground_sensor,
-                ground_detection,
-                update_on_ground
-            ))
             .insert_resource(RapierConfiguration {
                 gravity: Vec2::new(0.0, PHYSICS_SETTINGS.gravity),
                 ..Default::default()
@@ -231,17 +221,6 @@ pub struct ColliderBundle {
     pub force: ExternalForce,
 }
 
-#[derive(Clone, Default, Component)]
-pub struct GroundDetection {
-    pub on_ground: bool,
-}
-
-#[derive(Component)]
-pub struct GroundSensor {
-    pub ground_detection_entity: Entity,
-    pub intersecting_ground_entities: HashSet<Entity>,
-}
-
 impl From<&EntityInstance> for ColliderBundle {
     fn from(entity_instance: &EntityInstance) -> ColliderBundle {
         let rotation_constraints = LockedAxes::ROTATION_LOCKED;
@@ -260,101 +239,6 @@ impl From<&EntityInstance> for ColliderBundle {
                 ..Default::default()
             },
             _ => ColliderBundle::default(),
-        }
-    }
-}
-
-pub fn movement(
-    input: Res<Input<KeyCode>>,
-    mut q_velocity: Query<(&mut Velocity, &GroundDetection), With<Player>>,
-    q_coins: Query<&CoinState>,
-) {
-    let coins = match q_coins.get_single() {
-        Ok(coins) => coins,
-        Err(_) => return,
-    };
-
-    let loot_factor = coins.coins_total as f32 / GAME_RULES.starting_coins as f32;
-    let speed_factor = PLAYER_SETTINGS.base_loot_factor + ((1.0 - PLAYER_SETTINGS.base_loot_factor) * loot_factor);
-    for (mut velocity, ground_detection) in &mut q_velocity {
-        let right = if input.pressed(KeyCode::D) { 1.0 } else { 0.0 };
-        let left = if input.pressed(KeyCode::A) { 1.0 } else { 0.0 };
-
-        velocity.linvel.x = (right - left) * (PLAYER_SETTINGS.x_velocity * speed_factor);
-
-        if input.just_pressed(KeyCode::Space) && ground_detection.on_ground {
-            velocity.linvel.y = PLAYER_SETTINGS.jump_velocity * speed_factor;
-        }
-    }
-}
-
-pub fn spawn_ground_sensor(
-    mut commands: Commands,
-    detect_ground_for: Query<(Entity, &Collider), Added<GroundDetection>>,
-) {
-    for (entity, shape) in &detect_ground_for {
-        if let Some(capsule) = shape.as_capsule() {
-            let detector_shape = Collider::cuboid(capsule.radius() / 2.0, 2.);
-
-            let sensor_translation = Vec3::new(0., -capsule.height(), 0.);
-
-            commands.entity(entity).with_children(|builder| {
-                builder
-                    .spawn_empty()
-                    .insert(ActiveEvents::COLLISION_EVENTS)
-                    .insert(detector_shape)
-                    .insert(Sensor)
-                    .insert(Transform::from_translation(sensor_translation))
-                    .insert(GlobalTransform::default())
-                    .insert(GroundSensor {
-                        ground_detection_entity: entity,
-                        intersecting_ground_entities: HashSet::new(),
-                    });
-            });
-        }
-    }
-}
-
-pub fn update_on_ground(
-    mut ground_detectors: Query<&mut GroundDetection>,
-    ground_sensors: Query<&GroundSensor, Changed<GroundSensor>>,
-) {
-    for sensor in &ground_sensors {
-        if let Ok(mut ground_detection) = ground_detectors.get_mut(sensor.ground_detection_entity) {
-            ground_detection.on_ground = !sensor.intersecting_ground_entities.is_empty();
-        }
-    }
-}
-
-pub fn ground_detection(
-    mut ground_sensors: Query<&mut GroundSensor>,
-    mut collisions: EventReader<CollisionEvent>,
-    collidables: Query<With<Collider>, Without<Sensor>>,
-) {
-    for collision_event in collisions.iter() {
-        match collision_event {
-            CollisionEvent::Started(e1, e2, _) => {
-                if collidables.contains(*e1) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e2) {
-                        sensor.intersecting_ground_entities.insert(*e1);
-                    }
-                } else if collidables.contains(*e2) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e1) {
-                        sensor.intersecting_ground_entities.insert(*e2);
-                    }
-                }
-            }
-            CollisionEvent::Stopped(e1, e2, _) => {
-                if collidables.contains(*e1) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e2) {
-                        sensor.intersecting_ground_entities.remove(e1);
-                    }
-                } else if collidables.contains(*e2) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e1) {
-                        sensor.intersecting_ground_entities.remove(e2);
-                    }
-                }
-            }
         }
     }
 }
