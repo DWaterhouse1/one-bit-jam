@@ -9,7 +9,7 @@ use one_bit_jam::config::{
     LDTK_INT_CELL_VALUES,
 };
 use one_bit_jam::physics::PhysicsPluginGroup;
-use one_bit_jam::player::PlayerBundle;
+use one_bit_jam::player::{PlayerBundle, PlayerPlugin};
 use one_bit_jam::physics::WallBundle;
 use one_bit_jam::game_rules::GameRulesPlugin;
 
@@ -52,6 +52,7 @@ fn main() {
         .add_plugins(PhysicsPluginGroup)
         .add_plugins(CameraManagerPlugin)
         .add_plugins(GameRulesPlugin)
+        .add_plugins(PlayerPlugin)
         .run();
 }
 
