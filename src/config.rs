@@ -69,8 +69,8 @@ pub const PHYSICS_SETTINGS: PhysicsSettings = PhysicsSettings {
 };
 
 pub const PLAYER_SETTINGS: PlayerSettings = PlayerSettings {
-    half_height: 6.0,
-    radius: 8.0,
+    half_height: 8.0,
+    radius: 5.0,
     friction: 0.0,
     x_velocity: 150.0,
     jump_velocity: 300.0,

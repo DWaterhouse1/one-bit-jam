@@ -27,11 +27,6 @@ impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, spawn_wall_collision)
-            .add_systems(Update, (
-                spawn_ground_sensor,
-                ground_detection,
-                update_on_ground
-            ))
             .insert_resource(RapierConfiguration {
                 gravity: Vec2::new(0.0, PHYSICS_SETTINGS.gravity),
                 ..Default::default()
@@ -226,17 +221,6 @@ pub struct ColliderBundle {
     pub force: ExternalForce,
 }
 
-#[derive(Clone, Default, Component)]
-pub struct GroundDetection {
-    pub on_ground: bool,
-}
-
-#[derive(Component)]
-pub struct GroundSensor {
-    pub ground_detection_entity: Entity,
-    pub intersecting_ground_entities: HashSet<Entity>,
-}
-
 impl From<&EntityInstance> for ColliderBundle {
     fn from(entity_instance: &EntityInstance) -> ColliderBundle {
         let rotation_constraints = LockedAxes::ROTATION_LOCKED;
@@ -255,77 +239,6 @@ impl From<&EntityInstance> for ColliderBundle {
                 ..Default::default()
             },
             _ => ColliderBundle::default(),
-        }
-    }
-}
-
-pub fn spawn_ground_sensor(
-    mut commands: Commands,
-    detect_ground_for: Query<(Entity, &Collider), Added<GroundDetection>>,
-) {
-    for (entity, shape) in &detect_ground_for {
-        if let Some(capsule) = shape.as_capsule() {
-            let detector_shape = Collider::cuboid(capsule.radius() / 2.0, 2.);
-
-            let sensor_translation = Vec3::new(0., -capsule.height(), 0.);
-
-            commands.entity(entity).with_children(|builder| {
-                builder
-                    .spawn_empty()
-                    .insert(ActiveEvents::COLLISION_EVENTS)
-                    .insert(detector_shape)
-                    .insert(Sensor)
-                    .insert(Transform::from_translation(sensor_translation))
-                    .insert(GlobalTransform::default())
-                    .insert(GroundSensor {
-                        ground_detection_entity: entity,
-                        intersecting_ground_entities: HashSet::new(),
-                    });
-            });
-        }
-    }
-}
-
-pub fn update_on_ground(
-    mut ground_detectors: Query<&mut GroundDetection>,
-    ground_sensors: Query<&GroundSensor, Changed<GroundSensor>>,
-) {
-    for sensor in &ground_sensors {
-        if let Ok(mut ground_detection) = ground_detectors.get_mut(sensor.ground_detection_entity) {
-            ground_detection.on_ground = !sensor.intersecting_ground_entities.is_empty();
-        }
-    }
-}
-
-pub fn ground_detection(
-    mut ground_sensors: Query<&mut GroundSensor>,
-    mut collisions: EventReader<CollisionEvent>,
-    collidables: Query<With<Collider>, Without<Sensor>>,
-) {
-    for collision_event in collisions.iter() {
-        match collision_event {
-            CollisionEvent::Started(e1, e2, _) => {
-                if collidables.contains(*e1) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e2) {
-                        sensor.intersecting_ground_entities.insert(*e1);
-                    }
-                } else if collidables.contains(*e2) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e1) {
-                        sensor.intersecting_ground_entities.insert(*e2);
-                    }
-                }
-            }
-            CollisionEvent::Stopped(e1, e2, _) => {
-                if collidables.contains(*e1) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e2) {
-                        sensor.intersecting_ground_entities.remove(e1);
-                    }
-                } else if collidables.contains(*e2) {
-                    if let Ok(mut sensor) = ground_sensors.get_mut(*e1) {
-                        sensor.intersecting_ground_entities.remove(e2);
-                    }
-                }
-            }
         }
     }
 }
