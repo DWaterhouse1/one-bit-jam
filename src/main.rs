@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use bevy::window::PresentMode;
 
 use one_bit_jam::camera::CameraManagerPlugin;
-use one_bit_jam::animation::SpriteManagerPlugin;
 use one_bit_jam::levels::update_level_selection;
 use one_bit_jam::config::{
     WINDOW_SETTINGS,
@@ -11,9 +10,9 @@ use one_bit_jam::config::{
 };
 use one_bit_jam::physics::PhysicsPluginGroup;
 use one_bit_jam::player::PlayerBundle;
-use one_bit_jam::test_entity::TestEntityBundle;
 use one_bit_jam::physics::WallBundle;
 use one_bit_jam::game_rules::GameRulesPlugin;
+use one_bit_jam::animation::SpriteManagerPlugin;
 
 use bevy_ecs_ldtk::prelude::*;
 
@@ -50,11 +49,11 @@ fn main() {
         .add_systems(Update, update_level_selection)
         .insert_resource(LevelSelection::Uid(LDTK_PLAYER_LEVEL))
         .register_ldtk_entity::<PlayerBundle>("Player")
-        .register_ldtk_entity::<TestEntityBundle>("Entity")
         .register_ldtk_int_cell::<WallBundle>(LDTK_INT_CELL_VALUES.walls)
         .add_plugins(PhysicsPluginGroup)
         .add_plugins(CameraManagerPlugin)
         .add_plugins(GameRulesPlugin)
+        .add_plugins(SpriteManagerPlugin)
         .run();
 }
 

@@ -1,69 +1,58 @@
-use std::time::Duration;
 use bevy::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
+
+// use benimator::*;
 
 pub struct SpriteManagerPlugin;
 impl Plugin for SpriteManagerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, animate_sprites);
+        app
+            .add_systems(Update, load_sprite_sheets);
     }
 }
 
-#[derive(Default, Component)]
-pub struct Animation {
-    pub animation_timer: AnimationTimer,
-    pub animation_meta: AnimationMetadata,
-    pub animation_keys: AnimationKeys,
+#[derive(Clone, Default, Bundle, LdtkEntity)]
+pub struct AnimationBundle {
+    pub sprite_sheet_bundle: SpriteSheetBundle,
 }
 
-#[derive(Default, Component)]
-pub struct AnimationTimer(pub Timer);
-
-#[derive(Default, Component)]
-pub struct AnimationMetadata {
-    pub current: usize,
-    pub looping: bool,
+#[derive(Clone, Default, Component, LdtkEntity)]
+pub struct AnimationInfo {
+    pub sprite_sheet_path: String,
 }
 
-#[derive(Default, Component)]
-pub struct AnimationKeys {
-    pub keys: Vec<(usize, u32)>,
-}
-
-pub fn animate_sprites(
-    time: Res<Time>,
-    mut q_animation: Query<(
-        &mut TextureAtlasSprite, 
-        &mut AnimationTimer,
-        &mut AnimationMetadata,
-        & AnimationKeys,
-    )>,
-) {
-    for (mut tas, 
-        mut timer, 
-        mut anim_metadata, 
-        anim_keys
-    ) in &mut q_animation {
-        timer.0.tick(time.delta());
-        if timer.0.just_finished() {
-            anim_metadata.current += 1;
-
-            if anim_metadata.current <= anim_keys.keys.len() {
-                tas.index = anim_keys.keys[anim_metadata.current].0;
-
-            } else if anim_metadata.looping {
-                anim_metadata.current = 0;
-                tas.index = anim_metadata.current;
-            } else {
-                return
-            }
-
-            println!("setting timer to {:?} ns", anim_keys.keys[anim_metadata.current].1);
-            timer.0.set_duration(Duration::new(0, anim_keys.keys[anim_metadata.current].1));
+impl From<&EntityInstance> for AnimationInfo {
+    fn from(entity_instance: &EntityInstance) -> AnimationInfo {
+        println!("fomr entity instance for anim info");
+        match entity_instance.identifier.as_ref() {
+            "Player" => AnimationInfo {
+                sprite_sheet_path: "atlas/Lil_Gobbo.png".to_string(),
+            },
+            _ => AnimationInfo::default(),
         }
     }
 }
 
-#[derive(Default, Resource)]
-pub struct AnimationResource {
+fn load_sprite_sheets(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    q_anim: Query<(Entity, &AnimationInfo), Added<AnimationInfo>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+) {
+    // should always have a result due to Added, panic otherwise
+    let (entity, anim) = match q_anim.get_single() {
+        Ok(val) => val,
+        Err(_) => {
+            return;
+        },
+    };
 
+    let texture_handle = asset_server.load(anim.sprite_sheet_path.to_string());
+    let texture_atlas =
+        TextureAtlas::from_grid(texture_handle, Vec2::new(32.0, 32.0), 4, 1, None, None);
+    let texture_atlas_handle = texture_atlases.add(texture_atlas);
+    commands.entity(entity).insert(SpriteSheetBundle {
+        texture_atlas: texture_atlas_handle,
+        ..Default::default()
+    });
 }

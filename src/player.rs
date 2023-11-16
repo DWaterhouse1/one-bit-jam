@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use crate::physics::{ColliderBundle, GroundDetection};
-use crate::animation::Animation;
+use crate::animation::AnimationInfo;
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
 pub struct Player;
@@ -13,8 +13,7 @@ pub struct PlayerBundle {
     pub collider_bundle: ColliderBundle,
     #[worldly]
     pub worldly: Worldly,
-    #[sprite_sheet_bundle("atlas/Lil_Gobbo.png", 32.0, 32.0, 4, 1, 0.0, 0.0, 3)]
-    sprite_bundle: SpriteSheetBundle,
-    pub animation: Animation,
+    #[from_entity_instance]
+    pub animation_bundle: AnimationInfo,
     pub ground_detection: GroundDetection,
 }
